@@ -25,7 +25,7 @@ setup(
     description = ("An orchestrator for infrastructure deployment using terraform, ansible, and custom python functions"),
     license = "MIT",
     keywords = "terraform ansible python iac orchestrator",
-    install_requires=[ 'boto3>=1.21.43', 'pykeepass>=4.0.1', 'ipaddress>=1.0.23' ],
+    install_requires=[ 'boto3>=1.21.43', 'pykeepass>=4.0.1', 'ipaddress>=1.0.3' ],
     classifiers=[
         'Programming Language :: Python',
         'Intended Audience :: Testers',

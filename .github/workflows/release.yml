@@ -37,7 +37,7 @@ jobs:
             - name: Linting module
               uses: docker://technogix/terraform-python-awscli:v2.0.0
               with:
-                args: pylint technogix_iac_keywords
+                args: pylint orchestrator
 
             - name: Run Snyk to check for vulnerabilities
               uses: snyk/actions/python@master

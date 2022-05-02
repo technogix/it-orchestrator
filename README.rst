@@ -41,25 +41,13 @@ Why this orchestrator
 
 When dealing with IaC projects, we often sumble on the same kind of issues :
 
-* Sequencing a deployment often means intricating terraform and ansible infrastructure deployment with some small
-python tasks to do things terraform does not provide. Even if terraform can integrate ansible and python it is often
-more convenient to drive the sequencing through python that offers so much more flexibility
+* Sequencing a deployment often means intricating terraform and ansible infrastructure deployment with some small python tasks to do things terraform does not provide. Even if terraform can integrate ansible and python it is often more convenient to drive the sequencing through python that offers so much more flexibility
 
-* Longer deployment should be splitted into smaller tasks that can be executed independantly to each other. even if terraform
-tasks does not do any infrastructure modification if no changes has been done to the deployment, even this analysis may become
-tedious when the number of infrastructure item grows.
+* Longer deployment should be splitted into smaller tasks that can be executed independantly to each other. even if terraform tasks does not do any infrastructure modification if no changes has been done to the deployment, even this analysis may become tedious when the number of infrastructure item grows.
 
-* Managing parameters consistency between a large amount of tasks may become tedious, especially when secrets are involved.
-IaC tools all integrates with a vault, but each one gets its preferred one. Python does not use any natively. We want to rely
-on a shared vault with easy to use GUI interface. That's why this orchestrator relies on pykeepass and python to distribute secrets
-to all the jobs which needs it while ensuring they remain in-memory during all the process
+* Managing parameters consistency between a large amount of tasks may become tedious, especially when  ecrets are involved. IaC tools all integrates with a vault, but each one gets its preferred one. Python does not use any natively. We want to rely on a shared vault with easy to use GUI interface. That's why this orchestrator relies on pykeepass and python to distribute secrets to all the jobs which needs it while ensuring they remain in-memory during all the process
 
-* When the number of subnets grows in an infrastructure deployment, it is always a pain to find an available range for a new
-subnet with a given mask size. It is therefore convenient to get a simple script able to take into account all the subnets'
-masks needed and derive a set of compliant cidr ranges that do not overlap at each infrastructure deployment.
-It may become more complex when we do not want to change the cidr ranges that have already been allocated in your previous
-deployment to avoid unfortunate destruction and recreation of your existing infrastructure. One of the key task of this orchestrator
-is to automate this allocation.
+* When the number of subnets grows in an infrastructure deployment, it is always a pain to find an available range for a new subnet with a given mask size. It is therefore convenient to get a simple script able to take into account all the subnets' masks needed and derive a set of compliant cidr ranges that do not overlap at each infrastructure deployment. It may become more complex when we do not want to change the cidr ranges that have already been allocated in your previous deployment to avoid unfortunate destruction and recreation of your existing infrastructure. One of the key task of this orchestrator is to automate this allocation.
 
 
 Principle
@@ -97,14 +85,11 @@ IaC job may rely on a large range of parameters, and though they could be stored
 
 * Ensuring consistency between each steps parameters means opening a large number of files...
 
-* We would like to be able to manage complex variables such as json content and retrieve it from a separate file rather than polluting a
-configuration file with long parameters.
+* We would like to be able to manage complex variables such as json content and retrieve it from a separate file rather than polluting a configuration file with long parameters.
 
 The IT orchestrator provides a centralized parameters management taking into account security issues
 
-* Secrets shall be retrieved from the vaults and injected in IaC tools while ensuring that remain in-memory all along.
-IaC tools often integrate natively with a vault, but each one gets its own preferred vault and python does not use any natively.
-That's why this orchestrator relies on pykeepass and python to distribute secrets to all the jobs which needs it.
+* Secrets shall be retrieved from the vaults and injected in IaC tools while ensuring that remain in-memory all along. IaC tools often integrate natively with a vault, but each one gets its own preferred vault and python does not use any natively. That's why this orchestrator relies on pykeepass and python to distribute secrets to all the jobs which needs it.
 
 * Non secret values can be provided directly from a configuration file
 
@@ -134,8 +119,7 @@ Toy deployment
 To better understand the way this orchestrator works, we will use a toy deployment all along this documentation. The
 deployment we want to set consists in 2 separate steps :
 
-* The first step perform 2 separate terraform tasks (meaning they won't share the same tfstate file). One of them is mandatory,
-meaning we want it to be performed at each deployment without having to bother with it
+* The first step perform 2 separate terraform tasks (meaning they won't share the same tfstate file). One of them is mandatory, meaning we want it to be performed at each deployment without having to bother with it
 
 * The second step sequences a terraform task with a python task
 
@@ -175,8 +159,7 @@ The *workflow* key gives :
 
 * The name of the file containing the deployment workflow containing the tasks needed to deploy the infrastructure
 
-* The name of the file containing the destruction workflow containing the tasks needed to destroy the infrastructure (most of the time, they are not
-a simple reverse of each other - for example, when destroying s3 buckets, you need to empty them fist...)
+* The name of the file containing the destruction workflow containing the tasks needed to destroy the infrastructure (most of the time, they are not a simple reverse of each other - for example, when destroying s3 buckets, you need to empty them fist...)
 
 * The name of the file containing the list of subnets that will be used in the infrastructure
 
@@ -232,22 +215,17 @@ Each task is described with the following features :
 
 * A *description* feature stating the task purpose, to appear in the workflow console logs
 
-* A *mandatory* feature. If the task is set as mandatory, it will be performed at each deployment, whether you selected
-its associated step or not.
+* A *mandatory* feature. If the task is set as mandatory, it will be performed at each deployment, whether you selected its associated step or not.
 
 * A *type* feature stating if the task is a terraform or a python task (ansible yet to come)
 
-* A *path* feature (terraform task only) stating the path containing the terraform files for the task, relative to the
-terraform path set in the global configuration file
+* A *path* feature (terraform task only) stating the path containing the terraform files for the task, relative to the terraform path set in the global configuration file
 
-* A *state* feature (terraform task only) stating the prefix of the terraform tfstate file resulting from the task. The full
-filename will be derived as from the state path defined in the global configuration file with <global_state_path>/<state>.tfstate
+* A *state* feature (terraform task only) stating the prefix of the terraform tfstate file resulting from the task. The full filename will be derived as from the state path defined in the global configuration file with <global_state_path>/<state>.tfstate
 
-* A *method* feature (python task only) stating the orchestrator method to be applied to perform the task. The method will be
-able to retrieve parameters from the global parameters list
+* A *method* feature (python task only) stating the orchestrator method to be applied to perform the task. The method will be able to retrieve parameters from the global parameters list
 
-* A *args* feature (python task only) enabling to provide additional constant parameters to the task method. May be useful to
-set something related to another task workflow parameters such as a state name to ensure consistency in the workflow
+* A *args* feature (python task only) enabling to provide additional constant parameters to the task method. May be useful to set something related to another task workflow parameters such as a state name to ensure consistency in the workflow
 
 Parameters definition
 ---------------------
@@ -278,12 +256,9 @@ Each parameter is described with the following features :
 
 * A *value* feature (value parameter only) containing the value that should be assigned to the parameter
 
-* A *name* feature (file parameter only) containing the json filename (relative to configuration directory) which content shall be
-read and assigned to the parameter
+* A *name* feature (file parameter only) containing the json filename (relative to configuration directory) which content shall be read and assigned to the parameter
 
-* An *entry* feature (secret parameter only) containing a json structure. The *key* value states the title of the keepass
-entry to retrieve parameter value. The *feature* value states if we want to retrieve username or password in the entry to assign
-it to the parameter.
+* An *entry* feature (secret parameter only) containing a json structure. The *key* value states the title of the keepass entry to retrieve parameter value. The *feature* value states if we want to retrieve username or password in the entry to assign it to the parameter.
 
 Python tasks are relatively free to access any of those parameters in any way it whiches, but terraform tasks are more standardized.
 They will be provided with a tfvars file containing :
@@ -292,8 +267,7 @@ They will be provided with a tfvars file containing :
 
 * the non secret parameters associated to the step they belong to.
 
-* additional parameters directly set by the orchestrator : the type of environment we are deploying (prod, preprod, dev,
-staging,...), the git version associated to the deployment, and the module name from the deployment step name.
+* additional parameters directly set by the orchestrator : the type of environment we are deploying (prod, preprod, dev, staging,...), the git version associated to the deployment, and the module name from the deployment step name.
 
 Secrets will be provided from the terraform command line.
 
